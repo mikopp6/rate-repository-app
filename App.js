@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
+  console.log('logging');
   return (
     <View style={styles.container}>
       <Text>Testing, probably going to use emulator</Text>
