@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import numeral from 'numeral';
+
+import theme from '../theme';
 import Text from './Text';
 
 const styles = StyleSheet.create({
@@ -19,20 +21,32 @@ const styles = StyleSheet.create({
   },
   mainInfoContainer: {
     flexGrow: 1,
-    flexWrap: 'wrap'
+    flexShrink: 1
+  },
+  descriptionText: {
+    flexGrow: 1
   },
   flexContainerB: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    padding: 15
+    paddingBottom: 15
   },
   tinyLogo: {
     width: 50,
     height: 50,
   },
-  flexItemA: {
-    flexWrap: 'wrap'
+  languageContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+  },
+  languageText: {
+    color: 'white',
+    backgroundColor: theme.colors.primary,
+    borderRadius: 3,
+    flexGrow: 0,
+    paddingVertical: 3,
+    paddingHorizontal: 6,
   },
   flexItemB: {
     flexDirection: 'column',
@@ -49,9 +63,9 @@ const RepositoryItem = ({item}) => {
         </View>
         <View style={styles.mainInfoContainer}>
           <Text fontWeight='bold'>{item.fullName}</Text>
-          <Text>{item.description}</Text>
-          <View style={styles.flexItemA}>
-            <Text color='textSecondary' backgroundColor='primary'>{item.language}</Text>
+          <Text style={styles.descriptionText}>{item.description}</Text>
+          <View style={styles.languageContainer}>
+            <Text style={styles.languageText}>{item.language}</Text>
           </View>
         </View>
       </View>
