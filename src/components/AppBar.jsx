@@ -2,8 +2,12 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Link } from "react-router-native";
 import Constants from 'expo-constants';
+import { useContext } from 'react';
+import { useApolloClient } from '@apollo/client';
 
 import Text from './Text';
+import AuthStorageContext from '../contexts/AuthStorageContext';
+import useAuthorization from '../hooks/useAuthorization';
 
 const styles = StyleSheet.create({
   flexContainer: {
@@ -25,6 +29,19 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
+  const authStorage = useContext(AuthStorageContext);
+  const apolloClient = useApolloClient();
+  const data = useAuthorization();
+
+  const handleSignOut = async () => {
+    await authStorage.removeAccessToken();
+    apolloClient.resetStore();
+  };
+
+  const isLoggedIn = data
+    ? data.authorizedUser
+    : false;
+
   return (
     <View style={styles.flexContainer}>
       <ScrollView horizontal>
@@ -34,9 +51,14 @@ const AppBar = () => {
           </Link>
         </View>
         <View style={styles.flexItemB}>
-          <Link to="/signin" component={TouchableOpacity} activeOpacity={0.8}>
-            <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Sign in</Text>
-          </Link>
+          {isLoggedIn
+            ? <Link to="/signin" component={TouchableOpacity} onPress={handleSignOut}>
+                <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Sign out</Text>
+              </Link>
+            : <Link to="/signin" component={TouchableOpacity} activeOpacity={0.8}>
+                <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Sign in</Text>
+              </Link>
+          }
         </View>
       </ScrollView>
     </View>
