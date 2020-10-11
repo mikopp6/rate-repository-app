@@ -62,27 +62,27 @@ const RepositoryItem = ({item}) => {
           <Image style={styles.tinyLogo} source={{uri:item.ownerAvatarUrl}}/>
         </View>
         <View style={styles.mainInfoContainer}>
-          <Text fontWeight='bold'>{item.fullName}</Text>
-          <Text style={styles.descriptionText}>{item.description}</Text>
+          <Text testID='repoName' fontWeight='bold'>{item.fullName}</Text>
+          <Text testID='repoDesc' style={styles.descriptionText}>{item.description}</Text>
           <View style={styles.languageContainer}>
-            <Text style={styles.languageText}>{item.language}</Text>
+            <Text testID='repoLang' style={styles.languageText}>{item.language}</Text>
           </View>
         </View>
       </View>
       <View style={styles.flexContainerB}>
-        <View style={styles.flexItemB}>
+        <View testID='repoStars' style={styles.flexItemB}>
           <Text fontWeight='bold'>{numeral(item.stargazersCount).format('0.0a')}</Text>
           <Text>Stars</Text>
         </View>
-        <View style={styles.flexItemB}>
+        <View testID='repoForks' style={styles.flexItemB}>
           <Text fontWeight='bold'>{numeral(item.forksCount).format('0.0a')}</Text>
           <Text>Forks</Text>
         </View>
-        <View style={styles.flexItemB}>
+        <View testID='repoReviews' style={styles.flexItemB}>
           <Text fontWeight='bold'>{numeral(item.reviewCount).format('0a')}</Text>
           <Text>Reviews</Text>
         </View>
-        <View style={styles.flexItemB}>
+        <View testID='repoRating' style={styles.flexItemB}>
           <Text fontWeight='bold'>{item.ratingAverage}</Text>
           <Text>Rating</Text>
         </View>        
