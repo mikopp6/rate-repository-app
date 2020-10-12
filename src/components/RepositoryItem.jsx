@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet, Linking, TouchableOpacity } from 'react-native';
 import numeral from 'numeral';
 
 import theme from '../theme';
@@ -51,10 +51,22 @@ const styles = StyleSheet.create({
   flexItemB: {
     flexDirection: 'column',
     alignItems: 'center'
+  },
+  flexContainerC: {
+    paddingBottom: 15,
+    paddingHorizontal: 15
+  },
+  repoLink: {
+      color: 'white',
+      backgroundColor: theme.colors.primary,
+      borderRadius: 3,
+      flexGrow: 0,
+      padding: 10,
+      textAlign: 'center'
   }
 });
 
-const RepositoryItem = ({item}) => {
+const RepositoryItem = ({ item, isSingleView }) => { 
   return (
     <View style={styles.mainContainer}>
       <View style={styles.flexContainerA}>
@@ -87,6 +99,13 @@ const RepositoryItem = ({item}) => {
           <Text>Rating</Text>
         </View>        
       </View>
+      {isSingleView &&
+        <View style={styles.flexContainerC}>
+          <TouchableOpacity testID='githubButton' onPress={() => Linking.openURL(item.url)}>
+            <Text style={styles.repoLink}>Open in GitHub</Text>
+          </TouchableOpacity>
+        </View>
+      }  
     </View>
   );
 };
