@@ -13,9 +13,7 @@ const Greeting = ({ name }) => {
 
 describe('Greeting', () => {
   it('renders a greeting message based on the name prop', () => {
-    const { debug, getByTestId } = render(<Greeting name="Kalle" />);
-
-    debug();
+    const { getByTestId } = render(<Greeting name="Kalle" />);
 
     expect(getByTestId('greetingText')).toHaveTextContent('Hello Kalle!');
   });
@@ -59,18 +57,11 @@ const Form = ({ onSubmit }) => {
 describe('Form', () => {
   it('calls function provided by onSubmit prop after pressing the submit button', () => {
     const onSubmit = jest.fn();
-    const { debug, getByTestId } = render(<Form onSubmit={onSubmit} />);
-
-    debug();
+    const { getByTestId } = render(<Form onSubmit={onSubmit} />);
 
     fireEvent.changeText(getByTestId('usernameField'), 'kalle');
-    fireEvent.changeText(getByTestId('passwordField'), 'password');
-    
-    debug();
-    
-    fireEvent.press(getByTestId('submitButton'));
-
-    debug();
+    fireEvent.changeText(getByTestId('passwordField'), 'password');  
+    fireEvent.press(getByTestId('submitButton'));   
 
     expect(onSubmit).toHaveBeenCalledTimes(1);
 
