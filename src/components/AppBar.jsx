@@ -3,11 +3,12 @@ import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Link } from "react-router-native";
 import Constants from 'expo-constants';
 import { useContext } from 'react';
-import { useApolloClient } from '@apollo/client';
+import { useApolloClient, useQuery } from '@apollo/client';
+import { useHistory } from 'react-router-native';
 
 import Text from './Text';
 import AuthStorageContext from '../contexts/AuthStorageContext';
-import useAuthorization from '../hooks/useAuthorization';
+import { GET_AUTHORIZED_USER } from '../graphql/queries';
 
 const styles = StyleSheet.create({
   flexContainer: {
@@ -21,26 +22,21 @@ const styles = StyleSheet.create({
   flexItemA: {
     flexGrow: 0,
     padding: 15,
-  },
-  flexItemB: {
-    flexGrow: 0,
-    padding: 15,
   }
 });
 
 const AppBar = () => {
   const authStorage = useContext(AuthStorageContext);
   const apolloClient = useApolloClient();
-  const data = useAuthorization();
+  const history = useHistory();
+  const { data } = useQuery(GET_AUTHORIZED_USER);
+  const authorizedUser = data ? data.authorizedUser : undefined;
 
-  const handleSignOut = async () => {
+  const onSignOut = async () => {
     await authStorage.removeAccessToken();
     apolloClient.resetStore();
+    history.push('/');
   };
-
-  const isLoggedIn = data
-    ? data.authorizedUser
-    : false;
 
   return (
     <View style={styles.flexContainer}>
@@ -50,16 +46,26 @@ const AppBar = () => {
             <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Repositories</Text>
           </Link>
         </View>
-        <View style={styles.flexItemB}>
-          {isLoggedIn
-            ? <Link to="/signin" component={TouchableOpacity} onPress={handleSignOut}>
+        {authorizedUser ? (
+          <>
+            <View style={styles.flexItemA}>
+              <TouchableOpacity onPress={onSignOut}>
                 <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Sign out</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.flexItemA}>
+              <Link to="/createreview" component={TouchableOpacity} >
+                <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Create a reviev</Text>
               </Link>
-            : <Link to="/signin" component={TouchableOpacity} activeOpacity={0.8}>
-                <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Sign in</Text>
-              </Link>
-          }
-        </View>
+            </View>
+          </>
+        ) : (
+          <View style={styles.flexItemA}>
+            <Link to="/signin" component={TouchableOpacity} activeOpacity={0.8}>
+              <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Sign in</Text>
+            </Link>
+          </View>
+        )}
       </ScrollView>
     </View>
   );

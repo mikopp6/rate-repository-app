@@ -6,6 +6,7 @@ import RepositoryList from './RepositoryList';
 import AppBar from './AppBar';
 import SignIn from './SignIn';
 import SingleRepository from './SingleRepository';
+import CreateReview from './CreateReview';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,6 +21,9 @@ const Main = () => {
     <View style={styles.container}>
       <AppBar />
       <Switch>
+        <Route path="/createreview">
+          <CreateReview />
+        </Route>
         <Route path="/signin">
           <SignIn />
         </Route>
