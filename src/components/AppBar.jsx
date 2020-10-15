@@ -60,11 +60,18 @@ const AppBar = () => {
             </View>
           </>
         ) : (
-          <View style={styles.flexItemA}>
-            <Link to="/signin" component={TouchableOpacity} activeOpacity={0.8}>
-              <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Sign in</Text>
-            </Link>
-          </View>
+          <>
+            <View style={styles.flexItemA}>
+              <Link to="/signin" component={TouchableOpacity} activeOpacity={0.8}>
+                <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Sign in</Text>
+              </Link>
+            </View>
+            <View style={styles.flexItemA}>
+              <Link to="/signup" component={TouchableOpacity} activeOpacity={0.8}>
+                <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Sign up</Text>
+              </Link>
+            </View>
+          </>
         )}
       </ScrollView>
     </View>
