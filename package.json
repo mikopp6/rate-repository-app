@@ -24,6 +24,7 @@
   "dependencies": {
     "@apollo/react-hooks": "^4.0.0",
     "@react-native-community/async-storage": "~1.11.0",
+    "@react-native-community/picker": "1.6.0",
     "apollo-boost": "^0.4.9",
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
@@ -39,8 +40,8 @@
     "react-native-web": "~0.11.7",
     "react-router-dom": "^5.2.0",
     "react-router-native": "^5.2.0",
-    "yup": "^0.29.3",
-    "@react-native-community/picker": "1.6.0"
+    "use-debounce": "^5.0.1",
+    "yup": "^0.29.3"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

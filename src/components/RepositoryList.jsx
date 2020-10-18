@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { FlatList, View, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { Picker } from '@react-native-community/picker';
+import { useDebounce } from 'use-debounce';
 
 import RepositoryItem from './RepositoryItem';
 import useRepositories from '../hooks/useRepositories';
@@ -10,24 +11,40 @@ const styles = StyleSheet.create({
   separator: {
     height: 10,
   },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+    backgroundColor: 'white'
+  },
 });
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const OrderDropdown = ({ listOrder, setListOrder }) => {
+const ListHeader = ({ listOrder, setListOrder, setSearch }) => {
   return (
-    <Picker
-      selectedValue={listOrder}
-      onValueChange={(value) => setListOrder(value)}
-    >
-      <Picker.Item label= 'Latest repositories' value= 'CREATED_AT/DESC' />
-      <Picker.Item label= 'Highest rated repositories' value= 'RATING_AVERAGE/DESC' />
-      <Picker.Item label= 'Lowest rated repositories' value= 'RATING_AVERAGE/ASC' />
-    </Picker>
+    <View style={{paddingHorizontal:10}}>
+      <Picker selectedValue={listOrder} onValueChange={(value) => setListOrder(value)} >
+        <Picker.Item label= 'Latest repositories' value= 'CREATED_AT/DESC' />
+        <Picker.Item label= 'Highest rated repositories' value= 'RATING_AVERAGE/DESC' />
+        <Picker.Item label= 'Lowest rated repositories' value= 'RATING_AVERAGE/ASC' />
+      </Picker>
+      <TextInput
+        style={styles.input}
+        placeholder='Search...'
+        onChangeText={(text) => {
+          setSearch(text);
+        }}
+      />
+    </View>
+    
   );
 };
 
-export const RepositoryListContainer = ({ repositories, listOrder, setListOrder }) => {
+export const RepositoryListContainer = ({ repositories, listOrder, setListOrder, setSearch }) => {
   const history = useHistory();
   const repositoryNodes = repositories
     ? repositories.edges.map(edge => edge.node)
@@ -42,7 +59,7 @@ export const RepositoryListContainer = ({ repositories, listOrder, setListOrder 
       data={repositoryNodes}
       ItemSeparatorComponent={ItemSeparator}
       ListHeaderComponent={() =>
-        <OrderDropdown listOrder={listOrder} setListOrder={setListOrder} />
+        <ListHeader listOrder={listOrder} setListOrder={setListOrder} setSearch={setSearch} />
       }
       renderItem={({ item }) =>
         <TouchableOpacity activeOpacity={0.8} onPress={() => handleSelect(item.id)}>
@@ -55,9 +72,11 @@ export const RepositoryListContainer = ({ repositories, listOrder, setListOrder 
 
 const RepositoryList = () => {
   const [listOrder, setListOrder] = useState('CREATED_AT/DESC');
-  const { repositories } = useRepositories(listOrder);
+  const [search, setSearch] = useState('');
+  const [debouncedText] = useDebounce(search, 500);
+  const { repositories } = useRepositories(listOrder, debouncedText);
 
-  return <RepositoryListContainer repositories={repositories} listOrder={listOrder} setListOrder={setListOrder}/>;
+  return <RepositoryListContainer repositories={repositories} listOrder={listOrder} setListOrder={setListOrder} setSearch={setSearch}/>;
 };
 
 export default RepositoryList;
