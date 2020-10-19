@@ -44,7 +44,36 @@ const ListHeader = ({ listOrder, setListOrder, setSearch }) => {
   );
 };
 
-export const RepositoryListContainer = ({ repositories, listOrder, setListOrder, setSearch }) => {
+export class RepositoryListContainer extends React.Component {
+  renderHeader = () => {
+    const { listOrder, setListOrder, setSearch } = this.props;
+    return (
+      <ListHeader listOrder={listOrder} setListOrder={setListOrder} setSearch={setSearch} />
+    );
+  };
+
+  render() {
+    return (
+      <FlatList
+        data={this.props.repositoryNodes}
+        ItemSeparatorComponent={ItemSeparator}
+        ListHeaderComponent={this.renderHeader}
+        renderItem={({ item }) =>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => this.props.handleSelect(item.id)}>
+            <RepositoryItem item={item} isSingleView={false}/>
+          </TouchableOpacity>
+        }
+      />
+    );
+  }
+}
+
+const RepositoryList = () => {
+  const [listOrder, setListOrder] = useState('CREATED_AT/DESC');
+  const [search, setSearch] = useState('');
+  const [debouncedText] = useDebounce(search, 500);
+  const { repositories } = useRepositories(listOrder, debouncedText);
+  
   const history = useHistory();
   const repositoryNodes = repositories
     ? repositories.edges.map(edge => edge.node)
@@ -54,29 +83,7 @@ export const RepositoryListContainer = ({ repositories, listOrder, setListOrder,
     history.push(`/${id}`);
   };
 
-  return (
-    <FlatList
-      data={repositoryNodes}
-      ItemSeparatorComponent={ItemSeparator}
-      ListHeaderComponent={() =>
-        <ListHeader listOrder={listOrder} setListOrder={setListOrder} setSearch={setSearch} />
-      }
-      renderItem={({ item }) =>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => handleSelect(item.id)}>
-          <RepositoryItem item={item} isSingleView={false}/>
-        </TouchableOpacity>
-      }
-    />
-  );
-};
-
-const RepositoryList = () => {
-  const [listOrder, setListOrder] = useState('CREATED_AT/DESC');
-  const [search, setSearch] = useState('');
-  const [debouncedText] = useDebounce(search, 500);
-  const { repositories } = useRepositories(listOrder, debouncedText);
-
-  return <RepositoryListContainer repositories={repositories} listOrder={listOrder} setListOrder={setListOrder} setSearch={setSearch}/>;
+  return <RepositoryListContainer repositoryNodes={repositoryNodes} handleSelect={handleSelect} listOrder={listOrder} setListOrder={setListOrder} setSearch={setSearch}/>;
 };
 
 export default RepositoryList;
