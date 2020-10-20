@@ -28,9 +28,9 @@ const ListHeader = ({ listOrder, setListOrder, setSearch }) => {
   return (
     <View style={{paddingHorizontal:10}}>
       <Picker selectedValue={listOrder} onValueChange={(value) => setListOrder(value)} >
-        <Picker.Item label= 'Latest repositories' value= 'CREATED_AT/DESC' />
-        <Picker.Item label= 'Highest rated repositories' value= 'RATING_AVERAGE/DESC' />
-        <Picker.Item label= 'Lowest rated repositories' value= 'RATING_AVERAGE/ASC' />
+        <Picker.Item label='Latest repositories' value='CREATED_AT/DESC' />
+        <Picker.Item label='Highest rated repositories' value='RATING_AVERAGE/DESC' />
+        <Picker.Item label='Lowest rated repositories' value='RATING_AVERAGE/ASC' />
       </Picker>
       <TextInput
         style={styles.input}
@@ -51,18 +51,26 @@ export class RepositoryListContainer extends React.Component {
       <ListHeader listOrder={listOrder} setListOrder={setListOrder} setSearch={setSearch} />
     );
   };
+  
 
   render() {
+    const { repositories, handleSelect, onEndReach } = this.props;
+    const repositoryNodes = repositories
+    ? repositories.edges.map(edge => edge.node)
+    : [];
+
     return (
       <FlatList
-        data={this.props.repositoryNodes}
+        data={repositoryNodes}
         ItemSeparatorComponent={ItemSeparator}
         ListHeaderComponent={this.renderHeader}
         renderItem={({ item }) =>
-          <TouchableOpacity activeOpacity={0.8} onPress={() => this.props.handleSelect(item.id)}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => handleSelect(item.id)}>
             <RepositoryItem item={item} isSingleView={false}/>
           </TouchableOpacity>
         }
+        onEndReached={onEndReach}
+        onEndReachedThreshold={0.5}
       />
     );
   }
@@ -72,18 +80,35 @@ const RepositoryList = () => {
   const [listOrder, setListOrder] = useState('CREATED_AT/DESC');
   const [search, setSearch] = useState('');
   const [debouncedText] = useDebounce(search, 500);
-  const { repositories } = useRepositories(listOrder, debouncedText);
+
+  const [orderBy, orderDirection] = listOrder.split('/');
+  const { repositories, fetchMore } = useRepositories({
+    first: 8,
+    searchKeyword: debouncedText,
+    orderBy,
+    orderDirection
+  });
+
+  const onEndReach = () => {
+    console.log('You have reached the end of the list');
+    fetchMore();
+  };
   
   const history = useHistory();
-  const repositoryNodes = repositories
-    ? repositories.edges.map(edge => edge.node)
-    : [];
-
   const handleSelect = (id) => {
     history.push(`/${id}`);
   };
 
-  return <RepositoryListContainer repositoryNodes={repositoryNodes} handleSelect={handleSelect} listOrder={listOrder} setListOrder={setListOrder} setSearch={setSearch}/>;
+  return (
+    <RepositoryListContainer 
+      repositories={repositories}
+      handleSelect={handleSelect} 
+      listOrder={listOrder} 
+      setListOrder={setListOrder} 
+      setSearch={setSearch}
+      onEndReach={onEndReach}
+    />
+  );
 };
 
 export default RepositoryList;
