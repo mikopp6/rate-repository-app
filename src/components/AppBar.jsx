@@ -49,14 +49,19 @@ const AppBar = () => {
         {authorizedUser ? (
           <>
             <View style={styles.flexItemA}>
-              <TouchableOpacity onPress={onSignOut}>
-                <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Sign out</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.flexItemA}>
               <Link to="/createreview" component={TouchableOpacity} >
                 <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Create a reviev</Text>
               </Link>
+            </View>
+            <View style={styles.flexItemA}>
+              <Link to="/myreviews" component={TouchableOpacity} >
+                <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>My reviews</Text>
+              </Link>
+            </View>
+            <View style={styles.flexItemA}>
+              <TouchableOpacity onPress={onSignOut}>
+                <Text color='textSecondary' fontSize='subHeading' fontWeight='bold'>Sign out</Text>
+              </TouchableOpacity>
             </View>
           </>
         ) : (

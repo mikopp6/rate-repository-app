@@ -66,12 +66,31 @@ export const GET_SINGLE_REPOSITORY = gql`
 `;
 
 export const GET_AUTHORIZED_USER = gql`
-  query GET_AUTHORIZED_USER {
+  query GET_AUTHORIZED_USER ($includedReviews: Boolean = false) {
     authorizedUser {
       id
       username
+      reviews @include(if: $includedReviews) {
+        edges {
+          node {
+            id
+            text
+            rating
+            createdAt
+            user {
+              id
+              username
+            }
+          }
+          cursor
+        }
+        pageInfo {
+          endCursor
+          startCursor
+          totalCount
+          hasNextPage
+        }
+      }
     }
   }
 `;
-
-// other queries...
