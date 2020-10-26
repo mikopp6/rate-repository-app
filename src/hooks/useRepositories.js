@@ -10,7 +10,7 @@ const useRepositories = (variables) => {
   const handleFetchMore = () => {
     const canFetchMore =
       !loading && data && data.repositories.pageInfo.hasNextPage;
-
+    
     if (!canFetchMore) {
       return;
     }
@@ -22,6 +22,7 @@ const useRepositories = (variables) => {
         ...variables
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
+        console.log(fetchMoreResult);
         const nextResult = {
           repositories: {
             ...fetchMoreResult.repositories,
